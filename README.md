@@ -1,41 +1,76 @@
-# CS350
+# CC3220S-LAUNCHXL Thermostat Project
       
-# **GPIO InputOutput Project**
+## Overview
 
-## _Summarize the project and what problem it was solving._  
-This project involved toggling an LED on and off using GPIO pins on my microcontroller. It introduced basic embedded system concepts and helped me solve the problem of understanding how to configure and control hardware output through software.
+This project implements a basic thermostat on the Texas Instruments CC3220S-LAUNCHXL LaunchPad using C++ and the Texas Instruments SimpleLink CC3220S SDK. It demonstrates GPIO control for an LED (simulating a heater), temperature sensing using an I2C temperature sensor (TMP11X, TMP116, or TMP006), and UART communication for reporting data. The thermostat allows users to adjust the temperature set-point via button inputs.
 
-## _What did you do particularly well?_
-I think I particularly excelled in setting up the GPIO configurations and ensuring that the LED toggled accurately with each software instruction, I believe I demonstrated a clear understanding of microcontroller pin setup and control.
+## Features
 
-## _Where could you improve?_
-I could add a debounce mechanism (basically a technique that says “wait until this function hasn't been called in x time, and then run it”) for button inputs or implement a more user-friendly interface to control the LED.
+* **Temperature Sensing:** Reads ambient temperature from an I2C-based temperature sensor (TMP11X, TMP116, or TMP006).
+* **Set-Point Adjustment:** Allows increasing and decreasing the temperature set-point using GPIO button inputs.
+* **Heat Control (LED Simulation):** Controls an LED to simulate the activation/deactivation of a heater based on the ambient temperature and the set-point.
+* **UART Communication:** Reports temperature readings, set-point values, heating status, and elapsed time via UART.
+* **Task Scheduling:** Implements a simple task scheduler to manage the periodic execution of different functions.
+* **Interrupt-Driven Input:** Uses GPIO interrupts to handle button presses for set-point adjustment.
 
-## _What tools and/or resources are you adding to your support network?_
-I added the GPIO documentation for the microcontroller, resources on embedded C programming, and community forums for Code Composer Studio to my support network that will help me in the future.
+## Code Structure
 
-## _What skills from this project will be particularly transferable to other projects and/or course work?_
-I believe skills like configuring GPIO pins, debugging hardware issues, and understanding basic hardware-software integration are highly transferable to any project involving microcontrollers or embedded systems and will stay with me for my career.
+* `src/gpiointerrupt.c`: Contains the main application logic, including:
+    * Initialization of UART, I2C, GPIO, and Timer peripherals.
+    * Task scheduling implementation.
+    * Functions for reading temperature, adjusting the set-point, and controlling the simulated heater (LED).
+    * GPIO interrupt handlers for button inputs.
+* `src/main_nortos.c`: Provides the entry point for the application and initializes the NoRTOS environment.
+* `ti_drivers_config.h`: Header file containing driver configurations for the target platform.
 
-## _How did you make this project maintainable, readable, and adaptable?_
-I structured my code with clear comments, used descriptive variable names, and modularized the functionality for GPIO initialization and LED control. I believe this approach ensures that the project could be extended or modified easily.
+## Hardware Requirements
 
-# **Temperature Sensor Project**
+* Texas Instruments CC3220S-LAUNCHXL LaunchPad.
+* I2C temperature sensor (TMP11X, TMP116, or TMP006).
+* LED.
+* Push buttons.
+* Wiring (breadboard, jumper wires) (if necessary for external components).
 
-## _Summarize the project and what problem it was solving._
-This project involved reading temperature data from a sensor and displaying or responding to the readings, such as triggering an alert or controlling a device. I addressed the need for real-time temperature monitoring and control in embedded systems.
+## Software Requirements
 
-## _What did you do particularly well?_
-I think I effectively implemented the sensor interface, made sure there were accurate readings, and calibrated the system to respond appropriately to temperature thresholds.
+* Texas Instruments SimpleLink CC3220S SDK.
+* Compiler for CC3220S (e.g., TI Code Composer Studio or GCC).
 
-## _Where could you improve?_
-I could add some improvements like incorporating advanced features like data logging, setting up a wireless communication, or implementing a more sophisticated threshold adjustments through user input.
+## Setup
 
-## _What tools and/or resources are you adding to your support network?_
-I added online tutorials for interfacing temperature sensors with microcontrollers, and debugging tools like serial monitors for analyzing sensor data.
+1.  **Hardware Setup:**
+    * Connect the I2C temperature sensor, LED, and push buttons to the appropriate GPIO pins on the CC3220S-LAUNCHXL LaunchPad. Refer to the project's hardware schematic (if available) or the code (`ti_drivers_config.h` or comments in `gpiointerrupt.c`) for pin assignments.
+2.  **Software Setup:**
+    * Install the TI SimpleLink CC3220S SDK.
+    * Install a compatible C++ compiler for the CC3220S.
+    * Import the project into your IDE (e.g., Code Composer Studio) or set up a build environment.
+3.  **Code Compilation:**
+    * Compile the C++ code using the CC3220S compiler.
+4.  **Code Upload:**
+    * Flash the compiled code onto the CC3220S-LAUNCHXL LaunchPad.
 
-## _What skills from this project will be particularly transferable to other projects and/or course work?_
-I think skills like interfacing sensors, being able to process real-time data, and implementing control mechanisms correctly based on input values, which is all directly applicable to a wide range of IoT and embedded system applications.
+## Usage
 
-## _How did you make this project maintainable, readable, and adaptable?_
-Same as the first project, I used modular programming to separate sensor reading, data processing, and output functionality into distinct functions. Which in turn made the code easy to understand and extend for future use.
+1.  Power on the CC3220S-LAUNCHXL LaunchPad.
+2.  The program will start reading temperature data and controlling the LED.
+3.  Use the push buttons to:
+    * Increase the temperature set-point.
+    * Decrease the temperature set-point.
+4.  Observe the LED behavior:
+    * LED ON: Simulated heater is active (ambient temperature is below the set-point).
+    * LED OFF: Simulated heater is inactive (ambient temperature is at or above the set-point).
+5.  View the UART output to see temperature readings, set-point values, heating status, and elapsed time.
+
+## Important Notes
+
+* The `ti_drivers_config.h` file contains hardware-specific configurations. Ensure that the pin assignments in this file match your hardware setup.
+* The code includes a basic task scheduler to manage the periodic execution of temperature reading, set-point adjustment, and heat control logic.
+* The I2C temperature sensor address may vary. The code attempts to detect the sensor's address, but verify that it matches your hardware.
+* This project provides a basic thermostat implementation and can be extended with features such as:
+    * More sophisticated control algorithms (e.g., PID control).
+    * Displaying information on an LCD.
+    * Adding network connectivity (the CC3220S supports this).
+
+## Acknowledgments
+
+* Texas Instruments for the SimpleLink CC3220S SDK and CC3220S-LAUNCHXL LaunchPad.
